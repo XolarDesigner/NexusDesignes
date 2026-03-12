@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nexus  – Discord Design Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #2a1b3d, #4b3b8f, #7f5af0);
+      --card-bg: rgba(20, 16, 40, 0.85);
+      --accent-purple: #c77dff;
+      --accent-blue: #7b93ff;
+      --accent-pink: #ff6ac1;
+      --text-main: #f8f6ff;
+      --text-muted: #c1bcff;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.5);
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+      --transition-fast: 0.18s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background-image: var(--bg-gradient);
+      color: var(--text-main);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1100px;
+      padding: 32px 20px 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Header / Hero */
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      background: rgba(10, 8, 30, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 13px;
+      color: var(--text-muted);
+      width: fit-content;
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #ffb3ec, var(--accent-pink));
+      box-shadow: 0 0 0 6px rgba(255, 106, 193, 0.2);
+    }
+
+    h1 {
+      font-size: clamp(2.1rem, 4vw, 2.8rem);
+      letter-spacing: 0.03em;
+    }
+
+    h1 span {
+      background: linear-gradient(120deg, #ffb3ec, #c77dff, #7b93ff);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      max-width: 560px;
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      align-items: center;
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(10, 8, 30, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .hero-meta small {
+      opacity: 0.75;
+    }
+
+    /* Content layout */
+    .content {
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.3fr);
+      gap: 22px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 800px) {
+      .content {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: radial-gradient(circle at 0% -10%, rgba(255, 255, 255, 0.1), transparent 55%),
+        var(--card-bg);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 20px 18px;
+      backdrop-filter: blur(18px);
+    }
+
+    .card + .card {
+      margin-top: 12px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .card-tag {
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(123, 147, 255, 0.12);
+      border: 1px solid rgba(123, 147, 255, 0.4);
+      color: #dde3ff;
+    }
+
+    .card-body {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .price {
+      font-size: 1.1rem;
+      font-weight: 600;
+      background: linear-gradient(120deg, #ffb3ec, #c77dff);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .btn {
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        background var(--transition-fast),
+        color var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff6ac1, #c77dff);
+      color: #120b25;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.45);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px) scale(1.01);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .btn span.icon {
+      font-size: 1.1rem;
+    }
+
+    .btn-small {
+      padding: 7px 16px;
+      font-size: 0.86rem;
+      border-radius: 999px;
+    }
+
+    /* Right column (Info) */
+    .info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .info-item-title {
+      font-weight: 500;
+      color: #f5f1ff;
+      margin-bottom: 3px;
+    }
+
+    .info-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+      font-size: 0.8rem;
+    }
+
+    .info-pill {
+      padding: 4px 9px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(12, 8, 30, 0.7);
+    }
+
+    footer {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      opacity: 0.85;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .text-link {
+      color: var(--accent-blue);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      cursor: pointer;
+    }
+
+    /* Cookie banner – im Stil deiner alten Seite */
+    .cookie-banner {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      width: min(100% - 32px, 760px);
+      background: radial-gradient(circle at 0% 0%, rgba(255, 179, 236, 0.17), transparent 60%),
+        rgba(12, 6, 30, 0.96);
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.8);
+      padding: 20px 24px 18px;
+      display: none;
+      z-index: 60;
+      backdrop-filter: blur(24px);
+    }
+
+    .cookie-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2.7fr) auto;
+      gap: 18px;
+      align-items: center;
+    }
+
+    @media (max-width: 640px) {
+      .cookie-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+      }
+    }
+
+    .cookie-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .cookie-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .cookie-note {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      opacity: 0.85;
+    }
+
+    .cookie-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    /* Cookie settings modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 0, 15, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 70;
+      backdrop-filter: blur(12px);
+    }
+
+    .modal {
+      width: min(100% - 32px, 520px);
+      background: radial-gradient(circle at 0% 0%, rgba(123, 147, 255, 0.2), transparent 60%),
+        rgba(10, 6, 25, 0.98);
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+      padding: 20px 20px 16px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .modal-subtitle {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .modal-close {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 0 0 0 8px;
+    }
+
+    .modal-section {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .cookie-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 8px 0;
+    }
+
+    .cookie-option-main {
+      flex: 1;
+    }
+
+    .cookie-option-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .cookie-option-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .badge-required {
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      background: rgba(111, 255, 178, 0.08);
+      border: 1px solid rgba(111, 255, 178, 0.4);
+      color: #d0ffe9;
+      margin-left: 6px;
+    }
+
+    .switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      transition: 0.18s;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      top: 3px;
+      background-color: #f8f6ff;
+      border-radius: 50%;
+      transition: 0.18s;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+    }
+
+    .switch input:checked + .slider {
+      background: linear-gradient(135deg, #ff6ac1, #c77dff);
+    }
+
+    .switch input:checked + .slider::before {
+      transform: translateX(18px);
+    }
+
+    .modal-footer {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+
+    .modal-footer small {
+      flex: 1;
+      color: var(--text-muted);
+      max-width: 260px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="pill">
+        <span class="pill-dot"></span>
+        Exklusive Discord–Setups, ready to use
+      </div>
+      <h1><span>Nexus</span> – deine Discord Designes</h1>
+      <p class="subtitle">
+        Kleine, feine Servervorlagen in cleanem Design – perfekt abgestimmt auf
+        deine Community, dein Game oder dein Projekt. Du bekommst alles fertig
+        vorkonfiguriert, du musst nur noch einziehen.
+      </p>
+      <div class="hero-meta">
+        <span>✔ Custom Channelstruktur &amp; Rollen</span>
+        <span>✔ Aufgeräumtes, modernes Look &amp; Feel</span>
+        <span><small>Kauf &amp; Kontakt direkt über Gmail oder Discord‑Support</small></span>
+        <button class="btn btn-outline btn-small" style="margin-left:auto;" onclick="openDiscordSupport()">
+          <span class="icon">💠</span>
+          Discord Support
+        </button>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- Left: Produkte -->
+      <section>
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">MultigameHub Vorlage</div>
+              <small style="color: var(--text-muted); font-size: 0.8rem;">
+                Für Communitys mit mehreren Games &amp; Channels
+              </small>
+            </div>
+            <span class="card-tag">Most Popular</span>
+          </div>
+          <div class="card-body">
+            <div>
+              Perfekt, wenn du mehrere Spiele oder Teams unter einem Dach
+              bündeln willst. Klare Channel-Zonen, Rollenlogik für verschiedene
+              Games und dezentes Farbschema, das sich easy anpassen lässt.
+            </div>
+            <div class="price-row">
+              <span class="price">20&nbsp;€</span>
+              <button class="btn btn-primary" onclick="openGmailContact('MultigameHub Vorlage – Kaufanfrage')">
+                <span class="icon">📧</span>
+                Über Gmail kaufen
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Basic Server Vorlage</div>
+              <small style="color: var(--text-muted); font-size: 0.8rem;">
+                Minimalistisch, klar, ready in Minuten
+              </small>
+            </div>
+            <span class="card-tag">Einsteiger</span>
+          </div>
+          <div class="card-body">
+            <div>
+              Ideal für kleine Projekte, Freundesgruppen oder als Grundlage
+              für deinen eigenen Aufbau. Aufgeräumte Struktur mit nur den
+              Channels, die man wirklich braucht.
+            </div>
+            <div class="price-row">
+              <span class="price">5&nbsp;€</span>
+              <button class="btn btn-primary" onclick="openGmailContact('Basic Server Vorlage – Kaufanfrage')">
+                <span class="icon">📧</span>
+                Über Gmail kaufen
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Community Server</div>
+              <small style="color: var(--text-muted); font-size: 0.8rem;">
+                Fokus auf Austausch, Events &amp; Chill
+              </small>
+            </div>
+            <span class="card-tag">Social</span>
+          </div>
+          <div class="card-body">
+            <div>
+              Für wachsende Communities: klare Kategorien für Chat, Voice,
+              Events, Support und Media. Optimiert darauf, dass sich Leute
+              wohlfühlen und wiederkommen.
+            </div>
+            <div class="price-row">
+              <span class="price">10&nbsp;€</span>
+              <button class="btn btn-primary" onclick="openGmailContact('Community Server – Kaufanfrage')">
+                <span class="icon">📧</span>
+                Über Gmail kaufen
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Gaming Server</div>
+              <small style="color: var(--text-muted); font-size: 0.8rem;">
+                Matchmaking, Voice-Lobbys &amp; Teamplay
+              </small>
+            </div>
+            <span class="card-tag">Für Sweats &amp; Casuals</span>
+          </div>
+          <div class="card-body">
+            <div>
+              Übersichtliche Struktur für Ranked, Scrims, Casual Runden und
+              Team-Channels. Ideal für Clans, Esport-Teams oder feste Squads.
+            </div>
+            <div class="price-row">
+              <span class="price">15&nbsp;€</span>
+              <button class="btn btn-primary" onclick="openGmailContact('Gaming Server – Kaufanfrage')">
+                <span class="icon">📧</span>
+                Über Gmail kaufen
+              </button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Right: Info / Ablauf -->
+      <aside class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Wie läuft das ab?</div>
+            <small style="color: var(--text-muted); font-size: 0.8rem;">
+              Kurz &amp; unkompliziert – alles manuell abgestimmt
+            </small>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="info-list">
+            <div>
+              <div class="info-item-title">1. Vorlage auswählen</div>
+              <div>Such dir oben das Setup aus, das am besten zu deinem Projekt passt.</div>
+            </div>
+            <div>
+              <div class="info-item-title">2. Anfrage über Gmail oder Discord</div>
+              <div>Mit einem Klick öffnet sich Gmail zum Schreiben oder du kommst in den Support‑Server.</div>
+            </div>
+            <div>
+              <div class="info-item-title">3. Fertiges Setup erhalten</div>
+              <div>Du bekommst eine fertige Vorlage (z.&nbsp;B. via Template-Link), die du direkt importieren kannst.</div>
+            </div>
+          </div>
+
+          <div class="info-list" style="margin-top: 10px;">
+            <div>
+              <div class="info-item-title">Farben &amp; Style</div>
+              <div>
+                Chilliger Mix aus Lila, Babyblau und etwas Pink – modern,
+                aber nicht überladen.
+              </div>
+              <div class="info-pill-row">
+                <span class="info-pill">Pastell-Look</span>
+                <span class="info-pill">Übersichtlich &amp; clean</span>
+                <span class="info-pill">Mobile friendly</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <span>© <span id="year"></span> Nexus Cookies. Alle Rechte vorbehalten.</span>
+      <span>
+        <a href="#" class="text-link" onclick="openCookieSettingsFromFooter(event)">Cookie‑Einstellungen</a>
+        &nbsp;|&nbsp;
+        <a href="https://discord.gg/r58XMd8Zae" class="text-link" target="_blank" rel="noopener noreferrer">
+          Discord‑Support‑Server
+        </a>
+      </span>
+    </footer>
+  </div>
+
+  <!-- Cookie Banner -->
+  <div class="cookie-banner" id="cookieBanner">
+    <div class="cookie-layout">
+      <div>
+        <div class="cookie-title">Cookie‑Einstellungen</div>
+        <div class="cookie-text">
+          Wir verwenden Cookies, um Einstellungen zu erkennen, die Navigation auf der Website
+          zu verbessern, Benutzerstatistiken zu generieren und personalisierte Inhalte
+          anzubieten.
+        </div>
+        <div class="cookie-note">
+          Deine Auswahl wird lokal im Browser gespeichert.
+        </div>
+      </div>
+
+      <div class="cookie-buttons">
+        <button class="btn btn-primary btn-small" id="cookieAcceptBtn">
+          Alle akzeptieren
+        </button>
+        <button class="btn btn-outline btn-small" id="cookieSettingsBtn">
+          Cookie Einstellungen
+        </button>
+        <button class="btn btn-ghost btn-small" id="cookieDeclineBtn">
+          Alle ablehnen
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cookie Settings Modal -->
+  <div class="modal-backdrop" id="cookieModalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cookieModalTitle">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="cookieModalTitle">Cookie‑Einstellungen (Details)</div>
+          <div class="modal-subtitle">
+            Hier kannst du auswählen, welche Arten von Cookies erlaubt sind.
+            Die Einstellungen kannst du jederzeit unten auf der Seite wieder ändern.
+          </div>
+        </div>
+        <button class="modal-close" aria-label="Schließen" id="cookieModalCloseBtn">×</button>
+      </div>
+
+      <div class="modal-section">
+        <div class="cookie-option">
+          <div class="cookie-option-main">
+            <div class="cookie-option-title">
+              Notwendige Cookies
+              <span class="badge-required">immer aktiv</span>
+            </div>
+            <div class="cookie-option-text">
+              Sorgen dafür, dass die Seite technisch funktioniert (z.&nbsp;B.
+              deine Cookie-Auswahl speichern, grundlegende Sicherheit).
+              Ohne diese geht leider nichts.
+            </div>
+          </div>
+        </div>
+
+        <div class="cookie-option">
+          <div class="cookie-option-main">
+            <div class="cookie-option-title">Komfort &amp; Design</div>
+            <div class="cookie-option-text">
+              Merkt sich kleine Dinge wie deine bevorzugte Ansicht oder
+              ob Animationen reduziert werden sollen, damit die Seite sich
+              stabil und „rund“ anfühlt.
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="cookiePreferenceComfort" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="cookie-option">
+          <div class="cookie-option-main">
+            <div class="cookie-option-title">Optionale Statistik</div>
+            <div class="cookie-option-text">
+              Anonyme Auswertung, welche Bereiche der Seite am meisten genutzt
+              werden. Hilft mir, beliebte Server-Setups besser auszubauen – ohne
+              dein Profil zu erstellen.
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="cookiePreferenceAnalytics" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <small>
+          Hier werden keine persönlichen Daten ohne deine Einwilligung
+          an Dritte weitergegeben. Für echte Analytics oder Logs solltest
+          du später einen eigenen, datenschutzkonformen Backend‑Dienst nutzen.
+        </small>
+        <div>
+          <button class="btn btn-outline btn-small" id="cookieSaveEssentialBtn">
+            Nur notwendige
+          </button>
+          <button class="btn btn-primary btn-small" id="cookieSaveBtn">
+            Auswahl speichern
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Dynamisches Jahr
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Cookie-Logik (ohne Tracking/Webhook)
+    const COOKIE_KEY = "nexusCookiesConsent";
+
+    const banner = document.getElementById("cookieBanner");
+    const modalBackdrop = document.getElementById("cookieModalBackdrop");
+
+    const btnAccept = document.getElementById("cookieAcceptBtn");
+    const btnDecline = document.getElementById("cookieDeclineBtn");
+    const btnSettings = document.getElementById("cookieSettingsBtn");
+    const btnModalClose = document.getElementById("cookieModalCloseBtn");
+    const btnSave = document.getElementById("cookieSaveBtn");
+    const btnSaveEssential = document.getElementById("cookieSaveEssentialBtn");
+
+    const comfortCheckbox = document.getElementById("cookiePreferenceComfort");
+    const analyticsCheckbox = document.getElementById("cookiePreferenceAnalytics");
+
+    function showBanner() {
+      banner.style.display = "block";
+    }
+
+    function hideBanner() {
+      banner.style.display = "none";
+    }
+
+    function openModal() {
+      modalBackdrop.style.display = "flex";
+    }
+
+    function closeModal() {
+      modalBackdrop.style.display = "none";
+    }
+
+    function loadConsent() {
+      try {
+        const raw = localStorage.getItem(COOKIE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch {
+        return null;
+      }
+    }
+
+    function saveConsent(consent) {
+      try {
+        localStorage.setItem(COOKIE_KEY, JSON.stringify(consent));
+      } catch {
+        // ignore
+      }
+    }
+
+    function applyConsentToUI(consent) {
+      if (!consent) return;
+      comfortCheckbox.checked = !!consent.comfort;
+      analyticsCheckbox.checked = !!consent.analytics;
+    }
+
+    // Initialisierung
+    (function initCookies() {
+      const consent = loadConsent();
+      if (!consent) {
+        showBanner();
+      } else {
+        hideBanner();
+        applyConsentToUI(consent);
+      }
+    })();
+
+    btnAccept.addEventListener("click", () => {
+      const consent = { necessary: true, comfort: true, analytics: true };
+      saveConsent(consent);
+      applyConsentToUI(consent);
+      hideBanner();
+    });
+
+    btnDecline.addEventListener("click", () => {
+      const consent = { necessary: true, comfort: false, analytics: false };
+      saveConsent(consent);
+      applyConsentToUI(consent);
+      hideBanner();
+    });
+
+    btnSettings.addEventListener("click", () => {
+      const consent = loadConsent();
+      if (consent) applyConsentToUI(consent);
+      openModal();
+    });
+
+    btnModalClose.addEventListener("click", () => {
+      closeModal();
+    });
+
+    modalBackdrop.addEventListener("click", (e) => {
+      if (e.target === modalBackdrop) {
+        closeModal();
+      }
+    });
+
+    btnSave.addEventListener("click", () => {
+      const consent = {
+        necessary: true,
+        comfort: comfortCheckbox.checked,
+        analytics: analyticsCheckbox.checked,
+      };
+      saveConsent(consent);
+      hideBanner();
+      closeModal();
+    });
+
+    btnSaveEssential.addEventListener("click", () => {
+      const consent = { necessary: true, comfort: false, analytics: false };
+      saveConsent(consent);
+      applyConsentToUI(consent);
+      hideBanner();
+      closeModal();
+    });
+
+    function openCookieSettingsFromFooter(event) {
+      event.preventDefault();
+      const consent = loadConsent();
+      if (consent) applyConsentToUI(consent);
+      openModal();
+    }
+
+    // Gmail-Kontakt: HIER deine Gmail-Adresse eintragen
+    const GMAIL_ADDRESS = "info.nexusdesignes@gmail.com";
+
+    function openGmailContact(subject) {
+      const body =
+        "Hey,\n\nich möchte gerne diese Discord Server Vorlage bei dir kaufen:\n" +
+        subject +
+        "\n\nMein Discord-Name:\nSonstige Infos / Wünsche:\n\nDanke!";
+      const url =
+        "https://mail.google.com/mail/?view=cm&fs=1&to=" +
+        encodeURIComponent(GMAIL_ADDRESS) +
+        "&su=" +
+        encodeURIComponent(subject) +
+        "&body=" +
+        encodeURIComponent(body);
+
+      window.open(url, "_blank");
+    }
+
+    // Discord-Support immer erreichbar
+    function openDiscordSupport() {
+      window.open("https://discord.gg/r58XMd8Zae", "_blank");
+    }
+  </script>
+</body>
+</html>
